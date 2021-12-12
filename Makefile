@@ -37,6 +37,8 @@ BUNDLE_IMG ?= $(IMAGE_TAG_BASE)-bundle:v$(VERSION)
 
 # Image URL to use all building/pushing image targets
 IMG ?= controller:latest
+VGMANAGER_IMG ?= vgmanager:latest
+
 # ENVTEST_K8S_VERSION refers to the version of kubebuilder assets to be downloaded by envtest binary.
 ENVTEST_K8S_VERSION = 1.22
 
@@ -93,14 +95,21 @@ test: manifests generate fmt vet envtest ## Run tests.
 build: generate fmt vet ## Build manager binary.
 	go build -o bin/manager main.go
 
+build-vgmanager: generate fmt vet ## Build manager binary.
+	go build -o bin/vgmanager cmd/vgmanager/main.go
+
 run: manifests generate fmt vet ## Run a controller from your host.
 	go run ./main.go
 
 docker-build: test ## Build docker image with the manager.
 	docker build -t ${IMG} .
 
+docker-build-vgmanger:
+	docker build -f Dockerfile.vgmanager -t ${VGMANAGER_IMG} .
+
 docker-push: ## Push docker image with the manager.
 	docker push ${IMG}
+	docker push ${VGMANAGER_IMG}
 
 ##@ Deployment
 
