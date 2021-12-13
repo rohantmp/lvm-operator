@@ -172,7 +172,7 @@ func (b BlockDevice) GetPathByID() (string, error) {
 		}
 		if isMatch {
 			b.PathByID = path
-			return path, nil
+			return b.PathByID, nil
 		}
 	}
 	devPath, err := b.GetDevPath()
@@ -205,7 +205,7 @@ func ListBlockDevices() ([]BlockDevice, []string, error) {
 
 	deviceFSMap, err := GetDeviceFSMap()
 	if err != nil {
-		return []BlockDevice{}, []string{}, fmt.Errorf("failed to list block devices", err)
+		return []BlockDevice{}, []string{}, fmt.Errorf("failed to list block devices: %w", err)
 	}
 
 	columns := "NAME,ROTA,TYPE,SIZE,MODEL,VENDOR,RO,RM,STATE,KNAME,SERIAL,PARTLABEL"
