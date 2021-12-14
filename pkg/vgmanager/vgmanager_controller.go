@@ -149,7 +149,7 @@ func (r *VGReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Re
 		}
 
 		// create/update VG and update lvmd confif
-		err = addMatchingDevicesToVG(matchingDevices, lvmdConfig, "vgname")
+		err = r.addMatchingDevicesToVG(matchingDevices, lvmdConfig, "vgname")
 		if err != nil {
 			r.Log.Error(err, "could not prepareVGs and update lvmdConfig")
 			continue
@@ -184,7 +184,11 @@ func filterMatchingDevices(blockDevices []internal.BlockDevice, lvmCluster lvmv1
 	return []internal.BlockDevice{}, blockDevices, nil
 }
 
-func addMatchingDevicesToVG(matchingDevices []internal.BlockDevice, lvmdConfig *lvmdCMD.Config, vgName string) error {
+func (r *VGReconciler) addMatchingDevicesToVG(matchingDevices []internal.BlockDevice, lvmdConfig *lvmdCMD.Config, vgName string) error {
+	for _, device := range matchingDevices {
+		devLogger := r.Log.WithValues("device", device.KName)
+		devLogger.Info("device matched", "vgname", vgName)
+	}
 	// todo(rohan)
 	return nil
 }
